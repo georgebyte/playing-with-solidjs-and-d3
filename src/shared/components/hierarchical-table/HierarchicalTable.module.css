@@ -1,2 +1,6 @@
 .HierarchicalTable {
 }
+
+.CollapsibleRow {
+    cursor: pointer;
+}

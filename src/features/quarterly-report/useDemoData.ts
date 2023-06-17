@@ -1,8 +1,39 @@
-type DemoDataItem = {
+export type DemoDataItem = {
     [key: string]: DemoDataItem[] | number;
 };
 
-export function useDemoData(): DemoDataItem[] {
+export function useDemoDataByMonth(): DemoDataItem[] {
+    return [
+        {
+            Q3: [
+                {
+                    Jul: 46.4,
+                },
+                {
+                    Aug: 24.3,
+                },
+                {
+                    Sep: 42.7,
+                },
+            ],
+        },
+        {
+            Q4: [
+                {
+                    Oct: 115.5,
+                },
+                {
+                    Nov: 24.8,
+                },
+                {
+                    Dec: 97.2,
+                },
+            ],
+        },
+    ];
+}
+
+export function useDemoDataByWeek(): DemoDataItem[] {
     return [
         {
             Q1: [
