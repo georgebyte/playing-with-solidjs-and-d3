@@ -1,9 +1,53 @@
 .HierarchicalTable {
 }
 
-.CollapsibleRow {
+.HierarchicalTableRow {
+}
+
+.Collapsible {
+    cursor: pointer;
+    color: blue;
+}
+
+.Collapsed {
+}
+
+.HierarchicalTableCell {
+}
+
+.InvertedValue {
+    color: red;
+}
+
+.SkippedValue {
+    text-decoration: line-through;
+}
+
+.ActionsMenu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.ActionsMenu button {
+    margin: 0;
+    padding: 2px 8px;
+    background: transparent;
+    border: 0;
+    border-spacing: 0;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 1.5;
+    text-align: center;
     cursor: pointer;
 }
 
-.CollapsedRow {
+.ActionsMenu button:not(:first-child) {
+    border-top: 1px solid #ccc;
 }

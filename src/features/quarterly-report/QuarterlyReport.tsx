@@ -20,14 +20,13 @@ export const QuarterlyReport: Component = () => {
     const columns: HierarchicalTableColumn[] = [
         {
             label: "",
-            value: (d: HierarchicalTableRow) => {
+            getValue: (d: HierarchicalTableRow) => {
                 return d.data.label;
             },
         },
         {
             label: "AC",
-            value: (d: HierarchicalTableRow) => {
-                // PRTODO (jb): Format number with K for thousands
+            getValue: (d: HierarchicalTableRow) => {
                 // Don't return the calculated value (e.g. d3 hierarchy sum) if row has an
                 // actual value set in the source data
                 if (d.data.value !== undefined) {

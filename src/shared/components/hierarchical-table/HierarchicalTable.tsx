@@ -13,19 +13,29 @@ export type HierarchicalData = {
 
 export type HierarchicalTableRow = d3.HierarchyNode<HierarchicalData>;
 
+type HierarchicalTableCell = {
+    row: HierarchicalTableRow;
+    column: HierarchicalTableColumn;
+    content: string;
+};
+
+type ColumnAction = {
+    label: string;
+    handler: (d: HierarchicalTableRow) => void;
+};
+
 export type HierarchicalTableColumn = {
     label: string;
-    value: (d: HierarchicalTableRow) => string | number;
-    actions?: {
-        label: string;
-        handler: (d: HierarchicalTableRow) => void;
-    }[];
+    getValue: (d: HierarchicalTableRow) => string;
+    actions?: ColumnAction[];
 };
 
 type HierarchicalTableProps = {
     data: HierarchicalData;
     columns: HierarchicalTableColumn[];
 };
+
+let actionsMenuContainer: HTMLDivElement | undefined;
 
 export const HierarchicalTable: Component<HierarchicalTableProps> = (props) => {
     let tableContainer: HTMLDivElement | undefined;
@@ -38,7 +48,12 @@ export const HierarchicalTable: Component<HierarchicalTableProps> = (props) => {
         renderTable(root, props.columns, tableContainer);
     });
 
-    return <div ref={tableContainer} class={styles.HierarchicalTable} />;
+    return (
+        <>
+            <div ref={tableContainer} class={styles.HierarchicalTable} />
+            <div ref={actionsMenuContainer} class={styles.ActionsMenu} />
+        </>
+    );
 };
 
 function renderTable(
@@ -54,7 +69,7 @@ function renderTable(
         .data(columns)
         .enter()
         .append("th")
-        .text((d) => d.label);
+        .text((column) => column.label);
 
     const tbody = table.append("tbody");
     renderRows(root, columns, tbody);
@@ -76,29 +91,69 @@ function renderRows(
         .selectAll("tr")
         .data(rows)
         .join("tr")
-        .classed(styles.CollapsibleRow, (d) => !!d.children)
-        .classed(styles.CollapsedRow, (d) => !!d.data.collapsed)
+        .classed(styles.Collapsible, (row) => !!row.children)
+        .classed(styles.Collapsed, (row) => !!row.data.collapsed)
         .on("click", null);
 
-    row.filter((d) => !!d.children).on("click", (_, d) => {
-        d.data.collapsed = !d.data.collapsed;
+    row.filter((row) => !!row.children).on("click", (_, row) => {
+        row.data.collapsed = !row.data.collapsed;
         renderRows(root, columns, tbody, false);
     });
 
-    row.selectAll("td")
-        .data((d) => generateRowCells(d, columns))
+    const cell = row
+        .selectAll("td")
+        .data((row) => generateRowCells(row, columns))
         .join("td")
-        .text((d) => d.text)
-        .filter((d) => !!d.actions)
+        .classed(styles.HierarchicalTableCell, true)
+        .classed(styles.InvertedValue, (cell) => cell.row.data.valueModifier === "inverted")
+        .classed(styles.SkippedValue, (cell) => cell.row.data.valueModifier === "skipped")
+        .text((cell) => cell.content);
+
+    cell.filter((cell) => !cell.row.children && !!cell.column.actions)
         .append("button")
         .text("...")
-        .on("click", (_, d) => {
-            if (!d.actions || !d.actions[0]) {
-                return;
-            }
-            d.actions[0].handler(d.row);
-            renderRows(root, columns, tbody);
+        // PRTODO (jb): Unbind
+        .on("click", (event: PointerEvent, cell) => {
+            event.stopPropagation();
+            hideActionsMenu();
+            showActionsMenu(cell, event, () => renderRows(root, columns, tbody));
         });
+}
+
+function showActionsMenu(cell: HierarchicalTableCell, event: PointerEvent, rerender: () => void) {
+    if (!actionsMenuContainer || !cell.column.actions) {
+        return;
+    }
+
+    const triggerPosition = (event.target as HTMLElement).getBoundingClientRect();
+
+    d3.select(actionsMenuContainer)
+        .style("top", `${triggerPosition.top + triggerPosition.height}px`)
+        .style("left", `${triggerPosition.left}px`)
+        .selectAll("button")
+        .data(cell.column.actions)
+        .join("button")
+        .text((action) => action.label)
+        .on("click", (event: PointerEvent, action) => {
+            event.stopPropagation();
+            action.handler(cell.row);
+            hideActionsMenu();
+            rerender();
+        });
+
+    d3.select("body").on("click", hideActionsMenu);
+}
+
+function hideActionsMenu() {
+    if (!actionsMenuContainer) {
+        return;
+    }
+
+    const actionsMenu = d3.select(actionsMenuContainer);
+    actionsMenu.selectAll("button").on("click", null);
+    actionsMenu.html("");
+
+    d3.select("body").on("click", null);
 }
 
 function generateVisibleRows(node: d3.HierarchyNode<HierarchicalData>, rows: HierarchicalTableRow[] = []) {
@@ -114,9 +169,9 @@ function generateVisibleRows(node: d3.HierarchyNode<HierarchicalData>, rows: Hie
     return rows;
 }
 
-function generateRowCells(row: HierarchicalTableRow, columns: HierarchicalTableColumn[]) {
+function generateRowCells(row: HierarchicalTableRow, columns: HierarchicalTableColumn[]): HierarchicalTableCell[] {
     return columns.map((column) => {
-        return {row, text: column.value(row), actions: !row.children && column.actions ? column.actions : null};
+        return {row, column, content: column.getValue(row)};
     });
 }
 
