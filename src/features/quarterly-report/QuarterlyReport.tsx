@@ -8,6 +8,7 @@ import {
 } from "../../shared/components/hierarchical-table/HierarchicalTable";
 import {useDemoDataByMonth, useDemoDataByWeek} from "./useDemoData";
 import {useTransformToHierarchicalData} from "./useTransformToHierarchicalData";
+import {formatNumber} from "../../shared/helpers/numberHelpers";
 
 export const QuarterlyReport: Component = () => {
     const demoDataByMonth = useDemoDataByMonth();
@@ -26,22 +27,31 @@ export const QuarterlyReport: Component = () => {
         {
             label: "AC",
             value: (d: HierarchicalTableRow) => {
-                if (d.value === undefined) {
-                    return "";
+                // PRTODO (jb): Format number with K for thousands
+                // Don't return the calculated value (e.g. d3 hierarchy sum) if row has an
+                // actual value set in the source data
+                if (d.data.value !== undefined) {
+                    return formatNumber(d.data.value);
                 }
-                return d.value;
+                return formatNumber(d.value);
             },
             actions: [
                 {
+                    label: "Include",
+                    handler: (row: HierarchicalTableRow) => {
+                        row.data.valueModifier = "none";
+                    },
+                },
+                {
                     label: "Invert",
-                    handler: (d: HierarchicalTableRow) => {
-                        d.data.valueModifier = "inverted";
+                    handler: (row: HierarchicalTableRow) => {
+                        row.data.valueModifier = "inverted";
                     },
                 },
                 {
                     label: "Skip",
-                    handler: (d: HierarchicalTableRow) => {
-                        d.data.valueModifier = "skipped";
+                    handler: (row: HierarchicalTableRow) => {
+                        row.data.valueModifier = "skipped";
                     },
                 },
             ],

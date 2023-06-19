@@ -43,6 +43,7 @@ h6 {
 /* index.css styles */
 body {
     margin: 0;
+    min-height: 100vh;
     line-height: 1.5;
     font-family: "Helvetica";
     -webkit-font-smoothing: antialiased;
