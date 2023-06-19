@@ -1,7 +1,11 @@
 import {Component, createSignal} from "solid-js";
 
 import styles from "./QuarterlyReport.module.css";
-import {HierarchicalTable} from "../../shared/components/hierarchical-table/HierarchicalTable";
+import {
+    HierarchicalTable,
+    HierarchicalTableRow,
+    HierarchicalTableColumn,
+} from "../../shared/components/hierarchical-table/HierarchicalTable";
 import {useDemoDataByMonth, useDemoDataByWeek} from "./useDemoData";
 import {useTransformToHierarchicalData} from "./useTransformToHierarchicalData";
 
@@ -12,11 +16,45 @@ export const QuarterlyReport: Component = () => {
     const demoDataByWeek = useDemoDataByWeek();
     const hierarchicalDataByWeek = useTransformToHierarchicalData(demoDataByWeek);
 
-    const [dataToDisplay, setDataToDisplay] = createSignal(hierarchicalDataByWeek);
+    const columns: HierarchicalTableColumn[] = [
+        {
+            label: "",
+            value: (d: HierarchicalTableRow) => {
+                return d.data.label;
+            },
+        },
+        {
+            label: "AC",
+            value: (d: HierarchicalTableRow) => {
+                if (d.value === undefined) {
+                    return "";
+                }
+                return d.value;
+            },
+            actions: [
+                {
+                    label: "Invert",
+                    handler: (d: HierarchicalTableRow) => {
+                        d.data.valueModifier = "inverted";
+                    },
+                },
+                {
+                    label: "Skip",
+                    handler: (d: HierarchicalTableRow) => {
+                        d.data.valueModifier = "skipped";
+                    },
+                },
+            ],
+        },
+    ];
+
+    const [dataToDisplay, setDataToDisplay] = createSignal(hierarchicalDataByMonth);
 
     return (
         <div class={styles.QuarterlyReport}>
-            <HierarchicalTable data={dataToDisplay()} />
+            <button onClick={() => setDataToDisplay(hierarchicalDataByMonth)}>Demo data by month</button>
+            <button onClick={() => setDataToDisplay(hierarchicalDataByWeek)}>Demo data by week</button>
+            <HierarchicalTable data={dataToDisplay()} columns={columns} />
         </div>
     );
 };
