@@ -41,6 +41,13 @@ h6 {
 }
 
 /* index.css styles */
+:root {
+    --bg-color: #fefefe;
+    --text-color: rgb(50, 50, 50);
+    --text-color-danger: #fa5050;
+    --cell-border-color-rgb: 0, 0, 0;
+}
+
 body {
     margin: 0;
     min-height: 100vh;
@@ -48,6 +55,14 @@ body {
     font-family: "Helvetica";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+}
+
+body.dark {
+    --bg-color: #000a1d;
+    --text-color: #fafafa;
+    --cell-border-color-rgb: 255, 255, 255;
 }
 
 code {

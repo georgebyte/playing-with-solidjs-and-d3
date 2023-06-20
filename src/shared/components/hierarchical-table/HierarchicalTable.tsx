@@ -50,7 +50,7 @@ export const HierarchicalTable: Component<HierarchicalTableProps> = (props) => {
 
     return (
         <>
-            <div ref={tableContainer} class={styles.HierarchicalTable} />
+            <div ref={tableContainer} class={styles.HierarchicalTableContainer} />
             <div ref={actionsMenuContainer} class={styles.ActionsMenu} />
         </>
     );
@@ -61,14 +61,15 @@ function renderTable(
     columns: HierarchicalTableColumn[],
     tableContainer: HTMLDivElement
 ) {
-    const table = d3.select(tableContainer).html("").append("table");
+    const table = d3.select(tableContainer).html("").append("table").classed(styles.HierarchicalTable, true);
     const thead = table.append("thead");
     thead
         .append("tr")
+        .classed(styles.HierarchicalTableHeaderRow, true)
         .selectAll("th")
         .data(columns)
-        .enter()
-        .append("th")
+        .join("th")
+        .classed(styles.HierarchicalTableHeaderCell, true)
         .text((column) => column.label);
 
     const tbody = table.append("tbody");
@@ -91,8 +92,10 @@ function renderRows(
         .selectAll("tr")
         .data(rows)
         .join("tr")
-        .classed(styles.Collapsible, (row) => !!row.children)
-        .classed(styles.Collapsed, (row) => !!row.data.collapsed)
+        .classed(styles.HierarchicalTableRow, true)
+        .classed(styles.CollapsibleTableRow, (row) => !!row.children)
+        .classed(styles.CollapsedTableRow, (row) => !!row.data.collapsed)
+        .attr("data-row-depth", (row) => row.depth)
         .on("click", null);
 
     row.filter((row) => !!row.children).on("click", (_, row) => {
@@ -105,14 +108,15 @@ function renderRows(
         .data((row) => generateRowCells(row, columns))
         .join("td")
         .classed(styles.HierarchicalTableCell, true)
+        .classed(styles.HierarchicalTableCellWithActions, (cell) => !!cell.column.actions)
         .classed(styles.InvertedValue, (cell) => cell.row.data.valueModifier === "inverted")
         .classed(styles.SkippedValue, (cell) => cell.row.data.valueModifier === "skipped")
         .text((cell) => cell.content);
 
     cell.filter((cell) => !cell.row.children && !!cell.column.actions)
         .append("button")
-        .text("...")
-        // PRTODO (jb): Unbind
+        .text("•••")
+        .classed(styles.ActionsMenuToggle, true)
         .on("click", (event: PointerEvent, cell) => {
             event.stopPropagation();
             hideActionsMenu();
@@ -121,6 +125,7 @@ function renderRows(
 }
 
 function showActionsMenu(cell: HierarchicalTableCell, event: PointerEvent, rerender: () => void) {
+    // PRTODO (jb): Actions container is barely visible even when hidden because of border
     if (!actionsMenuContainer || !cell.column.actions) {
         return;
     }
@@ -161,6 +166,7 @@ function generateVisibleRows(node: d3.HierarchyNode<HierarchicalData>, rows: Hie
         // Only add nodes with a parent to exclude root node from the table
         rows.push(node);
     }
+    // PRTODO (jb): Mark row as last child to skip applying the border-bottom style
 
     if (node.children && !node.data.collapsed) {
         node.children.forEach((child) => generateVisibleRows(child, rows));

@@ -1,26 +1,94 @@
 .HierarchicalTable {
+    border-collapse: separate;
+    border-spacing: 32px 0;
+
+    --cell-border-color: rgba(var(--cell-border-color-rgb), 0);
+}
+
+.HierarchicalTableHeaderRow {
+}
+
+.HierarchicalTableHeaderCell:not(:first-of-type) {
+    text-align: right;
+    border-bottom: 2px solid rgba(var(--cell-border-color-rgb), 0.8);
 }
 
 .HierarchicalTableRow {
+    position: relative;
 }
 
-.Collapsible {
+.HierarchicalTableRow[data-row-depth="1"] {
+    --cell-border-color: rgba(var(--cell-border-color-rgb), 0.5);
+    font-weight: 600;
+}
+
+.HierarchicalTableRow[data-row-depth="2"] {
+    --cell-border-color: rgba(var(--cell-border-color-rgb), 0.2);
+}
+
+.CollapsibleTableRow {
     cursor: pointer;
-    color: blue;
-}
-
-.Collapsed {
 }
 
 .HierarchicalTableCell {
+    border-bottom: 1px solid var(--cell-border-color);
+}
+
+.HierarchicalTableRow:last-of-type .HierarchicalTableCell {
+    border-bottom: none;
+}
+
+.HierarchicalTableCell:not(:first-of-type) {
+    text-align: right;
+}
+
+.CollapsibleTableRow .HierarchicalTableCell:first-of-type:before {
+    content: "";
+    background-color: var(--text-color);
+    -webkit-mask: url("/src/assets/caret-down.svg") center/12px 12px;
+    mask: url("/src/assets/caret-down.svg") center/12px 12px;
+    position: absolute;
+    top: 50%;
+    left: -4px;
+    width: 12px;
+    height: 12px;
+    transform: translate(-100%, -50%);
+}
+
+.CollapsedTableRow .HierarchicalTableCell:first-of-type:before {
+    transform: translate(-100%, -50%) rotate(270deg);
 }
 
 .InvertedValue {
-    color: red;
+    color: var(--text-color-danger);
 }
 
 .SkippedValue {
     text-decoration: line-through;
+}
+
+.HierarchicalTableCellWithActions {
+    position: relative;
+}
+
+.ActionsMenuToggle {
+    position: absolute;
+    top: 50%;
+    right: -4px;
+    transform: translate(100%, -50%);
+    width: 16px;
+    margin: 0;
+    padding: 2px 0;
+    color: rgba(var(--cell-border-color-rgb), 0.2);
+    background: transparent;
+    border: 1px solid rgba(var(--cell-border-color-rgb), 0.2);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: normal;
+    line-height: 1;
+    text-align: center;
+    cursor: pointer;
 }
 
 .ActionsMenu {
@@ -30,7 +98,7 @@
     display: flex;
     flex-direction: column;
     background: white;
-    border: 1px solid #ccc;
+    border: 1px solid rgba(var(--cell-border-color-rgb), 0.2);
     border-radius: 4px;
 }
 
@@ -39,7 +107,6 @@
     padding: 2px 8px;
     background: transparent;
     border: 0;
-    border-spacing: 0;
     font-family: inherit;
     font-size: 16px;
     font-weight: normal;
@@ -49,5 +116,10 @@
 }
 
 .ActionsMenu button:not(:first-child) {
-    border-top: 1px solid #ccc;
+    border-top: 1px solid rgba(var(--cell-border-color-rgb), 0.2);
+}
+
+.ActionsMenu button:hover,
+.ActionsMenu button:active {
+    background: #eee;
 }
