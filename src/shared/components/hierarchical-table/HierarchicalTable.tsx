@@ -166,7 +166,6 @@ function generateVisibleRows(node: d3.HierarchyNode<HierarchicalData>, rows: Hie
         // Only add nodes with a parent to exclude root node from the table
         rows.push(node);
     }
-    // PRTODO (jb): Mark row as last child to skip applying the border-bottom style
 
     if (node.children && !node.data.collapsed) {
         node.children.forEach((child) => generateVisibleRows(child, rows));

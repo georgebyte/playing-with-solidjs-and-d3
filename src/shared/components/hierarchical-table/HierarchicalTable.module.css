@@ -1,4 +1,5 @@
 .HierarchicalTable {
+    margin-top: 32px;
     border-collapse: separate;
     border-spacing: 32px 0;
 
@@ -34,7 +35,8 @@
     border-bottom: 1px solid var(--cell-border-color);
 }
 
-.HierarchicalTableRow:last-of-type .HierarchicalTableCell {
+.HierarchicalTableRow:last-of-type .HierarchicalTableCell,
+.HierarchicalTableRow[data-row-depth="2"]:has(+ .CollapsibleTableRow[data-row-depth="1"]) .HierarchicalTableCell {
     border-bottom: none;
 }
 
