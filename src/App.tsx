@@ -1,7 +1,9 @@
 import type {Component} from "solid-js";
+import {Route, Routes, A} from "@solidjs/router";
 
 import styles from "./App.module.css";
-import {QuarterlyReport} from "./features/quarterly-report/QuarterlyReport";
+import {HomeView} from "./features/home/HomeView";
+import {QuarterlyReportRouter} from "./features/quarterly-report/QuarterlyReportRouter";
 
 export const App: Component = () => {
     function toggleTheme() {
@@ -15,13 +17,26 @@ export const App: Component = () => {
     return (
         <div class={styles.App}>
             <header class={styles.Header}>
-                <div class={styles.HeaderText}>hippo bi</div>
+                <div class={styles.AppName}>
+                    <A href="/">hippo bi</A>
+                </div>
+                <div class={styles.HeaderLinks}>
+                    <A href="/reports/by-month" class={styles.HeaderLink} activeClass={styles.ActiveHeaderLink}>
+                        Report by month
+                    </A>
+                    <A href="/reports/by-week" class={styles.HeaderLink} activeClass={styles.ActiveHeaderLink}>
+                        Report by week
+                    </A>
+                </div>
                 <div class={styles.HeaderThemeToggle}>
                     <button onClick={toggleTheme}>Toggle theme</button>
                 </div>
             </header>
             <main class={styles.Main}>
-                <QuarterlyReport />
+                <Routes>
+                    <Route path="/" component={HomeView} />
+                    <Route path="/reports/*" component={QuarterlyReportRouter} />
+                </Routes>
             </main>
         </div>
     );

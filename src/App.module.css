@@ -1,16 +1,49 @@
 .App {
+    max-width: 960px;
+    margin: 0 auto;
 }
 
 .Header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     height: 86px;
     padding: 24px;
+    gap: 48px;
     font-size: 36px;
 }
 
-.HeaderText {
+.Header a {
+    color: var(--text-color);
+}
+
+.AppName a {
+    text-decoration: none;
+}
+
+.HeaderLinks {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.HeaderLink {
+    padding: 0 8px;
+    text-decoration: none;
+    border-right: 1px solid var(--text-color);
+}
+
+.HeaderLink:last-child {
+    border-right: none;
+}
+
+.ActiveHeaderLink {
+    text-decoration: underline;
+}
+
+.HeaderThemeToggle {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
 }
 
 .HeaderThemeToggle button {
@@ -29,5 +62,6 @@
 }
 
 .Main {
+    margin-top: 32px;
     padding: 0 24px 48px;
 }

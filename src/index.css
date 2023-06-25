@@ -68,3 +68,11 @@ body.dark {
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+
+p {
+    margin-top: 24px;
+}
+
+p:first-child {
+    margin-top: 0;
+}
