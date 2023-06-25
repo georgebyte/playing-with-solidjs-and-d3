@@ -125,7 +125,6 @@ function renderRows(
 }
 
 function showActionsMenu(cell: HierarchicalTableCell, event: PointerEvent, rerender: () => void) {
-    // PRTODO (jb): Actions container is barely visible even when hidden because of border
     if (!actionsMenuContainer || !cell.column.actions) {
         return;
     }
@@ -135,6 +134,7 @@ function showActionsMenu(cell: HierarchicalTableCell, event: PointerEvent, reren
     d3.select(actionsMenuContainer)
         .style("top", `${triggerPosition.top + triggerPosition.height}px`)
         .style("left", `${triggerPosition.left}px`)
+        .style("display", null)
         .selectAll("button")
         .data(cell.column.actions)
         .join("button")
@@ -156,7 +156,7 @@ function hideActionsMenu() {
 
     const actionsMenu = d3.select(actionsMenuContainer);
     actionsMenu.selectAll("button").on("click", null);
-    actionsMenu.html("");
+    actionsMenu.style("display", "none").html("");
 
     d3.select("body").on("click", null);
 }
