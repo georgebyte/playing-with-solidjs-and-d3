@@ -15,9 +15,9 @@ export function useQuarterlyReportColumns(): HierarchicalTableColumn[] {
         {
             label: "AC",
             getValue: (row: HierarchicalTableRow) => {
-                // Don't return the calculated value (e.g. d3 hierarchy sum) if row has an
+                // Don't return the calculated value (e.g. d3 hierarchy sum) for "leaf rows" with an
                 // actual value set in the source data
-                if (row.data.value !== undefined) {
+                if (!row.data.children) {
                     const sign = row.data.valueModifier === "inverted" ? "-" : "";
                     return sign + formatNumber(row.data.value);
                 }
