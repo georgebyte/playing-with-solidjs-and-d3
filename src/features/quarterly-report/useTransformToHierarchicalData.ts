@@ -1,8 +1,6 @@
 import {DemoDataItem} from "./useDemoData";
 import {HierarchicalData} from "../../shared/components/hierarchical-table/HierarchicalTable";
 
-// PRTODO (jb): Add unit tests
-
 export function useTransformToHierarchicalData(input: DemoDataItem[]): HierarchicalData {
     return {label: "root", children: input.map((item) => transformItem(item))};
 }
